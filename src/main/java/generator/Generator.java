@@ -31,20 +31,36 @@ public class Generator {
      * @param blocksAmount describe the size of a generated list.
      */
     public void populateList(int blocksAmount) {
+        List<Integer> blueprints = new ArrayList<>();
+
+        // populate local list of possible blueprint indexes
+        for (int i = 0; i < MAX_BLUEPRINTS_AMOUNT; i++) {
+            blueprints.add(0);
+        }
+
         if (blocksAmount > MAX_BLOCKS || blocksAmount < 0) {
             blocksAmount = 1;
         }
 
+        // populate main list of blocks
         for (int i = 0; i < blocksAmount; i++) {
 
-            int blueprint = random.nextInt(MAX_BLUEPRINTS_AMOUNT);
-
-            if (blueprint > i ) {
-                blueprint = random.nextInt(i + 1);
+            int index = 0;
+            if (blueprints.size() != 0) {
+                index = random.nextInt(blueprints.size());
+                blueprints.set(index, blueprints.get(index) + 1);
             }
 
-            blocks.add(blueprint + ":" + Characters.generateCode());
+            if (blueprints.get(index) >= MAX_BLOCKS_PER_BLUEPRINT && index != 0) {
+                blueprints.remove(index);
+            }
+
+            if (index > i ) {
+                index = random.nextInt(i + 1);
+            }
+            blocks.add(index + ":" + Characters.generateCode());
         }
+        System.out.println(blueprints);
     }
 
     /**

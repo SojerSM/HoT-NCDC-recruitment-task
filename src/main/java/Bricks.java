@@ -16,7 +16,7 @@ public class Bricks {
     public static void main(String[] args) {
 
         Generator generator = new Generator();
-        generator.populateList(1000);
+        generator.populateList(10000000);
 
         generator.writeToTheFile();
     }
