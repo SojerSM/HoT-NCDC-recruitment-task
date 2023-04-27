@@ -1,3 +1,5 @@
+import generator.Characters;
+
 import java.util.Scanner;
 
 public class Bricks {
@@ -5,11 +7,14 @@ public class Bricks {
 
     public static void main(String[] args) {
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            System.out.println(line);
-        }
+//        while (scanner.hasNextLine()) {
+//            String line = scanner.nextLine();
+//            System.out.println(line);
+//        }
+//
+//        scanner.close();
 
-        scanner.close();
+        String code = Characters.generateCode();
+        System.out.println(code);
     }
 }
