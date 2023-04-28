@@ -1,9 +1,7 @@
 import generator.Generator;
 import model.Box;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * NCDC House of Talents recruitment task.
@@ -19,49 +17,36 @@ public class Bricks {
     private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
-//        generateBlocksList(20);
-        Box box = new Box(readFileFromMethodArg(args));
+        generateBlocksList(50);
+        Box box = new Box(readFileFromMethodArg());
 
         if (box.getBlocks() == null) {
             System.out.println(BAD_INPUT_MESSAGE);
-            return;
         }
-
-        for (Map.Entry<Integer, String[]> entry : box.getBlocks().entrySet()) {
-            Integer key = entry.getKey();
-            String[] values = entry.getValue();
-
-            System.out.println(key + ": " + values[0] + " " + values[1]);
-        }
-    }
-
-    public static void generateBlocksList(int listSize) {
-        generator.populateList(listSize);
-        generator.writeToTheFile();
+        box.printBlocks();
     }
 
     /**
      * This method takes the .txt file given from the main method
      * argument and transform it into hashMap, where keys are
-     * just ascending numbers and values are two element arrays
-     * of type String.
+     * just ascending numbers and values are lines written as a string.
      *
      * @return a hashmap.
      */
-    private static Map<Integer, String[]> readFileFromMethodArg(String[] args) {
-        Map<Integer, String[]> transformed = new HashMap<>();
+    private static Map<Integer, String> readFileFromMethodArg() {
+        Map<Integer, String> transformed = new HashMap<>();
         int i = 0;
 
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            String[] parts = line.split(":");
 
-            // if given input doesn't meet requirements break the loop and return null;
-            if (!validateInput(parts)) return null;
+            // if given input doesn't meet requirements break the loop and return null
+            if (!validateInput(line)) return null;
 
-            transformed.put(i,parts);
+            transformed.put(i,line);
             i++;
         }
+
         scanner.close();
         return transformed;
     }
@@ -69,12 +54,14 @@ public class Bricks {
     /**
      * This method checks conditions for given input.
      *
-     * @param parts stands for blueprint index which should be a positive natural number
-     *              and block code which should be all uppercase and exactly 4 characters
-     *              long.
+     * @param line stands for string built with blueprint index which should be a positive
+     *             natural number and block code which should be all uppercase and exactly
+     *             4 characters long.
      * @return true if all conditions are meet, false if input is wrong in any way.
      */
-    private static boolean validateInput(String[] parts) {
+    private static boolean validateInput(String line) {
+        String[] parts = line.split(":");
+
         if (parts[1].length() != 4) return false;
 
         if (!isUpperCase(parts[1])) return false;
@@ -84,7 +71,6 @@ public class Bricks {
         } catch(NumberFormatException err) {
             return false;
         }
-
         return true;
     }
 
@@ -95,5 +81,11 @@ public class Bricks {
             if (!Character.isUpperCase(codeArr[i])) return false;
         }
         return true;
+    }
+
+    // manual testing purposes
+    public static void generateBlocksList(int listSize) {
+        generator.populateList(listSize);
+        generator.writeToTheFile();
     }
 }
