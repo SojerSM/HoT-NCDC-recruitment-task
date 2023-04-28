@@ -1,7 +1,10 @@
 import generator.Generator;
 import model.Box;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * NCDC House of Talents recruitment task.
@@ -17,7 +20,7 @@ public class Bricks {
     private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
-        generateBlocksList(50);
+//        generateBlocksList(50);
         Box box = new Box(readFileFromMethodArg());
 
         if (box.getBlocks() == null) {
@@ -33,35 +36,42 @@ public class Bricks {
      *
      * @return a hashmap.
      */
-    private static Map<Integer, String> readFileFromMethodArg() {
+    private static Map<Integer, List<String>> readFileFromMethodArg() {
         Map<Integer, String> transformed = new HashMap<>();
         int i = 0;
 
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            line = line.replaceAll("\\r?\\n", "");
 
-            // if given input doesn't meet requirements break the loop and return null
-            if (!validateInput(line)) return null;
+            // if blueprint index is empty, set block as a 'box-related' (index of 0)
+            String[] parts = line.split(":");
+            if (parts[0].length() < 1) {
+                parts[0] += 0;
+            }
 
-            transformed.put(i,line);
-            i++;
+            if (line.length() != 0) {
+
+                // if given input doesn't meet requirements break the loop and return null
+                if (!validateInput(parts)) return null;
+
+                transformed.put(i,parts[0].concat(":" + parts[1]));
+                i++;
+            }
         }
-
         scanner.close();
-        return transformed;
+        return Box.sortBlocksByBlueprint(transformed);
     }
 
     /**
      * This method checks conditions for given input.
      *
-     * @param line stands for string built with blueprint index which should be a positive
+     * @param parts stands for string array filled with blueprint index which should be a positive
      *             natural number and block code which should be all uppercase and exactly
      *             4 characters long.
      * @return true if all conditions are meet, false if input is wrong in any way.
      */
-    private static boolean validateInput(String line) {
-        String[] parts = line.split(":");
-
+    private static boolean validateInput(String[] parts) {
         if (parts[1].length() != 4) return false;
 
         if (!isUpperCase(parts[1])) return false;

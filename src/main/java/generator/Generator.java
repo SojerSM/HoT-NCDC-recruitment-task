@@ -64,7 +64,7 @@ public class Generator {
             if (index > i ) {
                 index = random.nextInt(i + 1);
             }
-            blocks.add(index + ":" + Characters.generateCode());
+            blocks.add(index + ":" + Characters.generateCode() + "\r\n");
         }
     }
 
