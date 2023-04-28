@@ -20,7 +20,7 @@ public class Bricks {
     private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
-//        generateBlocksList(50);
+//        generateBlocksList(20);
         Box box = new Box(readFileFromMethodArg());
 
         if (box.getBlocks() == null) {
@@ -44,13 +44,8 @@ public class Bricks {
             String line = scanner.nextLine();
             line = line.replaceAll("\\r?\\n", "");
 
-            // if blueprint index is empty, set block as a 'box-related' (index of 0)
             String[] parts = line.split(":");
-            if (parts[0].length() < 1) {
-                parts[0] += 0;
-            }
-
-            if (line.length() != 0) {
+            if (line.length() != 0 && parts[0].length() > 0) {
 
                 // if given input doesn't meet requirements break the loop and return null
                 if (!validateInput(parts)) return null;
