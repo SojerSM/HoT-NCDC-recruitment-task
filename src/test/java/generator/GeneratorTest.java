@@ -27,8 +27,8 @@ class GeneratorTest {
     }
 
     @Test
-    public void testPopulateWithMoreThanTenMillionsCodes() {
-        generator.populateList(10000001);
+    public void testPopulateWithMoreThanFifteenMillionsCodes() {
+        generator.populateList(15000001);
         assertEquals(1,generator.getBlocks().size());
     }
 }

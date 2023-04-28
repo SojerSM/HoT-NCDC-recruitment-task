@@ -1,5 +1,8 @@
 import generator.Generator;
+import model.Box;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -12,12 +15,46 @@ import java.util.Scanner;
  */
 public class Bricks {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
 
-        Generator generator = new Generator();
-        generator.populateList(10000000);
+//        generateBlocksList(20);
+        Box box = new Box(readFileFromMethodArg());
 
+        for (Map.Entry<Integer, String[]> entry : box.getBlocks().entrySet()) {
+            Integer key = entry.getKey();
+            String[] values = entry.getValue();
+
+            System.out.println(key + ": " + values[0] + " " + values[1]);
+        }
+
+    }
+
+    public static void generateBlocksList(int listSize) {
+        generator.populateList(listSize);
         generator.writeToTheFile();
+    }
+
+    /**
+     * This method takes the .txt file given from the main method
+     * argument and transform it into hashMap, where keys are
+     * just ascending numbers and values are two element arrays
+     * of type String.
+     *
+     * @return a hashmap.
+     */
+    public static Map<Integer, String[]> readFileFromMethodArg() {
+        Map<Integer, String[]> transformed = new HashMap<>();
+        int i = 0;
+
+        while(scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String[] parts = line.split(":");
+            transformed.put(i,parts);
+            i++;
+        }
+        scanner.close();
+        return transformed;
     }
 }

@@ -22,7 +22,7 @@ public enum Characters {
     private static final Random random = new Random();
     private final char character;
 
-    private Characters(char character) {
+    Characters(char character) {
         this.character = character;
     }
 
@@ -32,14 +32,14 @@ public enum Characters {
 
     public static String generateCode() {
         Characters[] characters = values();
-        String code = "";
+        StringBuilder code = new StringBuilder();
 
         for (int i = 0; i < 4; i++) {
             int value = random.nextInt(characters.length);
 
-            code += String.valueOf(characters[value]);
+            code.append(characters[value]);
         }
 
-        return code;
+        return code.toString();
     }
 }
