@@ -66,10 +66,12 @@ public class Bricks {
      *             4 characters long.
      * @return true if all conditions are meet, false if input is wrong in any way.
      */
-    private static boolean validateInput(String[] parts) {
+    protected static boolean validateInput(String[] parts) {
         if (parts[1].length() != 4) return false;
 
         if (!isUpperCase(parts[1])) return false;
+
+        if (Integer.parseInt(parts[0]) < 0) return false;
 
         try {
             Integer.parseInt(parts[0]);
