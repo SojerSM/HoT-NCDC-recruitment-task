@@ -1,7 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BricksTest {
 
@@ -34,12 +33,21 @@ class BricksTest {
     @Test
     public void testValidateInputIndexNotANumber() {
         parts = new String[]{"A","AAAA"};
-        assertFalse(Bricks.validateInput(parts));
+
+        Throwable exception = assertThrows(NumberFormatException.class, () -> Bricks.validateInput(parts));
+        String expectedMessage = "For input string: \"A\"";
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
     @Test
     public void testValidateInputIndexNegative() {
         parts = new String[]{"-1","AAAA"};
+        assertFalse(Bricks.validateInput(parts));
+    }
+
+    @Test
+    public void testValidateInputIllegalDigit() {
+        parts = new String[]{"1","ABCY"};
         assertFalse(Bricks.validateInput(parts));
     }
 }

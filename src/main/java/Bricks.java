@@ -1,3 +1,4 @@
+import generator.Characters;
 import generator.Generator;
 import model.Box;
 
@@ -20,7 +21,7 @@ public class Bricks {
     private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
-//        generateBlocksList(20);
+//      generateBlocksList(20);
         Box box = new Box(readFileFromMethodArg());
 
         if (box.getBlocks() == null) {
@@ -69,7 +70,9 @@ public class Bricks {
     protected static boolean validateInput(String[] parts) {
         if (parts[1].length() != 4) return false;
 
-        if (!isUpperCase(parts[1])) return false;
+        if (!checkIsUpperCase(parts[1])) return false;
+
+        if (!checkHasCorrectCharacters(parts[1])) return false;
 
         if (Integer.parseInt(parts[0]) < 0) return false;
 
@@ -81,11 +84,25 @@ public class Bricks {
         return true;
     }
 
-    private static boolean isUpperCase(String code) {
+    private static boolean checkHasCorrectCharacters(String code) {
+        char[] codeArr = code.toCharArray();
+        int counter = 0;
+
+        for (char c : codeArr) {
+            for(Characters enumChar : Characters.values()) {
+                if (String.valueOf(c).equals(enumChar.name())) {
+                    counter++;
+                }
+            }
+        }
+        return (counter == 4);
+    }
+
+    private static boolean checkIsUpperCase(String code) {
         char[] codeArr = code.toCharArray();
 
-        for (int i = 0; i < codeArr.length; i++) {
-            if (!Character.isUpperCase(codeArr[i])) return false;
+        for (char c : codeArr) {
+            if (!Character.isUpperCase(c)) return false;
         }
         return true;
     }
