@@ -1,5 +1,5 @@
-import generator.Characters;
-import generator.Generator;
+import helpers.Generator;
+import helpers.Validator;
 import model.Box;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Scanner;
  * If doesn't compile, try to restart your computer. That's weird, works on my PC though...
  *
  * @author Sebastian Mazur
- * @version 0.0.2
+ * @version 0.3.3
  * @since 2023-04-27
  */
 public class Bricks {
@@ -49,7 +49,7 @@ public class Bricks {
             if (line.length() != 0 && parts[0].length() > 0) {
 
                 // if given input doesn't meet requirements break the loop and return null
-                if (!validateInput(parts)) return null;
+                if (!Validator.validateInput(parts)) return null;
 
                 transformed.put(i,parts[0].concat(":" + parts[1]));
                 i++;
@@ -57,54 +57,6 @@ public class Bricks {
         }
         scanner.close();
         return Box.sortBlocksByBlueprint(transformed);
-    }
-
-    /**
-     * This method checks conditions for given input.
-     *
-     * @param parts stands for string array filled with blueprint index which should be a positive
-     *             natural number and block code which should be all uppercase and exactly
-     *             4 characters long.
-     * @return true if all conditions are meet, false if input is wrong in any way.
-     */
-    protected static boolean validateInput(String[] parts) {
-        if (parts[1].length() != 4) return false;
-
-        if (!checkIsUpperCase(parts[1])) return false;
-
-        if (!checkHasCorrectCharacters(parts[1])) return false;
-
-        if (Integer.parseInt(parts[0]) < 0) return false;
-
-        try {
-            Integer.parseInt(parts[0]);
-        } catch(NumberFormatException err) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean checkHasCorrectCharacters(String code) {
-        char[] codeArr = code.toCharArray();
-        int counter = 0;
-
-        for (char c : codeArr) {
-            for(Characters enumChar : Characters.values()) {
-                if (String.valueOf(c).equals(enumChar.name())) {
-                    counter++;
-                }
-            }
-        }
-        return (counter == 4);
-    }
-
-    private static boolean checkIsUpperCase(String code) {
-        char[] codeArr = code.toCharArray();
-
-        for (char c : codeArr) {
-            if (!Character.isUpperCase(c)) return false;
-        }
-        return true;
     }
 
     // manual testing purposes
