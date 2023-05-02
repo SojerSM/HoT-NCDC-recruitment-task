@@ -11,24 +11,21 @@ import java.util.Map;
  */
 public class Box {
     private Map<Integer, List<String>> blocks;
+    private int firstStageBlocks;
+    private int secondStageBlocks;
+    private int notUsedBlocks;
+    private int missedBlocks;
+    private int finishedBlueprints;
+    private int notFinishedBlueprints;
 
     public Box(Map<Integer, List<String>> blocks) {
         this.blocks = blocks;
-    }
-
-    public Map<Integer, List<String>> getBlocks() {
-        return this.blocks;
-    }
-
-    // manual testing purposes
-    public void printBlocks() {
-        try {
-            for (Map.Entry<Integer, List<String>> entry : this.blocks.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
-            }
-        } catch(NullPointerException error) {
-            System.out.println(error);
-        }
+        this.firstStageBlocks = 0;
+        this.secondStageBlocks = 0;
+        this.notUsedBlocks = 0;
+        this.missedBlocks = 0;
+        this.finishedBlueprints = 0;
+        this.notFinishedBlueprints = 0;
     }
 
     /**
@@ -60,5 +57,68 @@ public class Box {
             }
         }
         return orderedBlocks;
+    }
+
+    // manual testing purposes
+    public void printBlocks() {
+        try {
+            for (Map.Entry<Integer, List<String>> entry : this.blocks.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        } catch(NullPointerException error) {
+            System.out.println(error);
+        }
+    }
+
+    public Map<Integer, List<String>> getBlocks() {
+        return this.blocks;
+    }
+
+    public int getFirstStageBlocks() {
+        return firstStageBlocks;
+    }
+
+    public void setFirstStageBlocks(int firstStageBlocks) {
+        this.firstStageBlocks = firstStageBlocks;
+    }
+
+    public int getSecondStageBlocks() {
+        return secondStageBlocks;
+    }
+
+    public void setSecondStageBlocks(int secondStageBlocks) {
+        this.secondStageBlocks = secondStageBlocks;
+    }
+
+    public int getNotUsedBlocks() {
+        return notUsedBlocks;
+    }
+
+    public void setNotUsedBlocks(int notUsedBlocks) {
+        this.notUsedBlocks = notUsedBlocks;
+    }
+
+    public int getMissedBlocks() {
+        return missedBlocks;
+    }
+
+    public void setMissedBlocks(int missedBlocks) {
+        this.missedBlocks = missedBlocks;
+    }
+
+    public int getFinishedBlueprints() {
+        return finishedBlueprints;
+    }
+
+    public void setFinishedBlueprints(int finishedBlueprints) {
+        this.finishedBlueprints = finishedBlueprints;
+    }
+
+    public int getNotFinishedBlueprints() {
+        return notFinishedBlueprints;
+    }
+
+    public void setNotFinishedBlueprints(int notFinishedBlueprints) {
+        this.notFinishedBlueprints = notFinishedBlueprints;
     }
 }
