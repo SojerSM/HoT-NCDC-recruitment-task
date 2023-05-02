@@ -2,10 +2,7 @@ import helpers.Generator;
 import helpers.Validator;
 import model.Box;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * NCDC House of Talents recruitment task.
@@ -17,17 +14,22 @@ import java.util.Scanner;
  */
 public class Bricks {
     private static final String BAD_INPUT_MESSAGE = "klops";
+    private static final int FIRST_STAGE_DIVIDER = 3;
     private static final Scanner scanner = new Scanner(System.in);
     private static final Generator generator = new Generator();
 
     public static void main(String[] args) {
 //      generateBlocksList(20);
-        Box box = new Box(readFileFromMethodArg());
+        Box box = new Box();
+        box.sortBlocksByBlueprint(readFileFromMethodArg());
 
-        if (box.getBlocks() == null) {
+        if (box.getBlueprints() == null || box.getBlocks() == null) {
             System.out.println(BAD_INPUT_MESSAGE);
         }
-        box.printBlocks();
+
+        box.printBoxContent();
+        processFirstStage(box);
+        box.printBoxContent();
     }
 
     /**
@@ -37,7 +39,7 @@ public class Bricks {
      *
      * @return a hashmap.
      */
-    private static Map<Integer, List<String>> readFileFromMethodArg() {
+    private static Map<Integer, String> readFileFromMethodArg() {
         Map<Integer, String> transformed = new HashMap<>();
         int i = 0;
 
@@ -56,7 +58,38 @@ public class Bricks {
             }
         }
         scanner.close();
-        return Box.sortBlocksByBlueprint(transformed);
+        return transformed;
+    }
+
+    /**
+     * This method runs the first stage of program requirements.
+     *
+     * @param initialized box object.
+     */
+    private static void processFirstStage(Box box) {
+        List<String> tempAvailableBlocks;
+        int usedBlocks = 0;
+
+        for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
+            tempAvailableBlocks = box.getBlocks();
+
+            if (blueprint.getKey() % FIRST_STAGE_DIVIDER == 0) {
+
+                for (String requiredBlock : blueprint.getValue()) {
+
+                    if (tempAvailableBlocks.contains(requiredBlock)) {
+                        tempAvailableBlocks.remove(requiredBlock);
+                        usedBlocks++;
+                    }
+                }
+
+                if (usedBlocks == blueprint.getValue().size()) {
+                    box.setBlocks(tempAvailableBlocks);
+                    box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
+                    box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
+                }
+            }
+        }
     }
 
     // manual testing purposes

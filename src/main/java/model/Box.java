@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class responsible for storing collection of blocks and performing
- * all operations that are required.
+ * Class responsible for storing collection of blocks and all numbers required to
+ * be displayed back as a program result.
  */
 public class Box {
-    private Map<Integer, List<String>> blocks;
+    private List<String> blocks;
+    private Map<Integer, List<String>> blueprints;
     private int firstStageBlocks;
     private int secondStageBlocks;
     private int notUsedBlocks;
@@ -18,8 +19,9 @@ public class Box {
     private int finishedBlueprints;
     private int notFinishedBlueprints;
 
-    public Box(Map<Integer, List<String>> blocks) {
-        this.blocks = blocks;
+    public Box() {
+        this.blocks = new ArrayList<>();
+        this.blueprints = new HashMap<>();
         this.firstStageBlocks = 0;
         this.secondStageBlocks = 0;
         this.notUsedBlocks = 0;
@@ -34,9 +36,8 @@ public class Box {
      * does not have any matching blueprint index.
      *
      * @param blocks is a map created from .txt file at the program init.
-     * @return sorted map.
      */
-    public static Map<Integer, List<String>> sortBlocksByBlueprint(Map<Integer, String> blocks) {
+    public void sortBlocksByBlueprint(Map<Integer, String> blocks) {
         Map<Integer, List<String>> orderedBlocks = new HashMap<>();
         int size = blocks.size();
 
@@ -47,8 +48,12 @@ public class Box {
             for (Map.Entry<Integer, String> block : blocks.entrySet()) {
                 String[] parts = block.getValue().split(":");
 
-                if (Integer.parseInt(parts[0]) == i) {
+                if (Integer.parseInt(parts[0]) == i && i > 0) {
                     relatedCodes.add(parts[1]);
+                }
+
+                if (Integer.parseInt(parts[0]) == i && i == 0) {
+                    this.blocks.add(parts[1]);
                 }
             }
 
@@ -56,22 +61,38 @@ public class Box {
                 orderedBlocks.put(i, relatedCodes);
             }
         }
-        return orderedBlocks;
+        this.blueprints = orderedBlocks;
     }
 
     // manual testing purposes
-    public void printBlocks() {
+    public void printBoxContent() {
+        System.out.println(this.blocks);
         try {
-            for (Map.Entry<Integer, List<String>> entry : this.blocks.entrySet()) {
+            for (Map.Entry<Integer, List<String>> entry : this.blueprints.entrySet()) {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         } catch(NullPointerException error) {
             System.out.println(error);
         }
+        System.out.println("\n");
+        System.out.println(getFirstStageBlocks());
+        System.out.println(getSecondStageBlocks());
+        System.out.println(getNotUsedBlocks());
+        System.out.println(getMissedBlocks());
+        System.out.println(getFinishedBlueprints());
+        System.out.println(getNotFinishedBlueprints());
     }
 
-    public Map<Integer, List<String>> getBlocks() {
-        return this.blocks;
+    public List<String> getBlocks() {
+        return blocks;
+    }
+
+    public void setBlocks(List<String> blocks) {
+        this.blocks = blocks;
+    }
+
+    public Map<Integer, List<String>> getBlueprints() {
+        return this.blueprints;
     }
 
     public int getFirstStageBlocks() {
