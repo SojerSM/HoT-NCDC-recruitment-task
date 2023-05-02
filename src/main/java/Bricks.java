@@ -28,7 +28,7 @@ public class Bricks {
         }
 
         box.printBoxContent();
-        processFirstStage(box);
+        checkBlueprints(box);
         box.printBoxContent();
     }
 
@@ -66,12 +66,13 @@ public class Bricks {
      *
      * @param initialized box object.
      */
-    private static void processFirstStage(Box box) {
+    private static void checkBlueprints(Box box) {
         List<String> tempAvailableBlocks;
-        int usedBlocks = 0;
+        int usedBlocks;
 
         for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
-            tempAvailableBlocks = box.getBlocks();
+            usedBlocks = 0;
+            tempAvailableBlocks = new ArrayList<>(box.getBlocks());
 
             if (blueprint.getKey() % FIRST_STAGE_DIVIDER == 0) {
 
@@ -87,9 +88,39 @@ public class Bricks {
                     box.setBlocks(tempAvailableBlocks);
                     box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
                     box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
+                } else {
+                    box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
+                    box.setMissedBlocks(box.getMissedBlocks() + (blueprint.getValue().size() - usedBlocks));
                 }
             }
         }
+
+        for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
+            usedBlocks = 0;
+            tempAvailableBlocks = new ArrayList<>(box.getBlocks());
+
+            if (blueprint.getKey() % FIRST_STAGE_DIVIDER != 0) {
+
+                for (String requiredBlock : blueprint.getValue()) {
+
+                    if (tempAvailableBlocks.contains(requiredBlock)) {
+                        tempAvailableBlocks.remove(requiredBlock);
+                        usedBlocks++;
+                    }
+                }
+
+                if (usedBlocks == blueprint.getValue().size()) {
+                    box.setBlocks(tempAvailableBlocks);
+                    box.setSecondStageBlocks(box.getFirstStageBlocks() + usedBlocks);
+                    box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
+                } else {
+                    box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
+                    box.setMissedBlocks(box.getMissedBlocks() + (blueprint.getValue().size() - usedBlocks));
+                }
+            }
+        }
+
+        box.setNotUsedBlocks(box.getBlocks().size());
     }
 
     // manual testing purposes
