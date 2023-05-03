@@ -74,7 +74,9 @@ public class Box {
         } catch(NullPointerException error) {
             System.out.println(error);
         }
-        System.out.println("\n");
+    }
+
+    public void printResults() {
         System.out.println(getFirstStageBlocks());
         System.out.println(getSecondStageBlocks());
         System.out.println(getNotUsedBlocks());

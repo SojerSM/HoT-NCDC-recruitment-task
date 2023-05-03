@@ -17,19 +17,23 @@ public class Bricks {
     private static final int FIRST_STAGE_DIVIDER = 3;
     private static final Scanner scanner = new Scanner(System.in);
     private static final Generator generator = new Generator();
+    private static boolean isFirstInvoke = true;
 
     public static void main(String[] args) {
-//      generateBlocksList(20);
         Box box = new Box();
-        box.sortBlocksByBlueprint(readFileFromMethodArg());
 
-        if (box.getBlueprints() == null || box.getBlocks() == null) {
+        try {
+            box.sortBlocksByBlueprint(readFileFromMethodArg());
+        } catch (NullPointerException err) {
             System.out.println(BAD_INPUT_MESSAGE);
+            return;
         }
 
-        box.printBoxContent();
-        checkBlueprints(box);
-        box.printBoxContent();
+        for (int i = 0; i < 2; i++) {
+            checkBlueprints(box);
+        }
+
+        box.printResults();
     }
 
     /**
@@ -74,7 +78,8 @@ public class Bricks {
             usedBlocks = 0;
             tempAvailableBlocks = new ArrayList<>(box.getBlocks());
 
-            if (blueprint.getKey() % FIRST_STAGE_DIVIDER == 0) {
+            if ((isFirstInvoke && blueprint.getKey() % FIRST_STAGE_DIVIDER == 0)
+                    || (!isFirstInvoke && blueprint.getKey() % FIRST_STAGE_DIVIDER != 0)) {
 
                 for (String requiredBlock : blueprint.getValue()) {
 
@@ -86,40 +91,19 @@ public class Bricks {
 
                 if (usedBlocks == blueprint.getValue().size()) {
                     box.setBlocks(tempAvailableBlocks);
-                    box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
                     box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
-                } else {
-                    box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
-                    box.setMissedBlocks(box.getMissedBlocks() + (blueprint.getValue().size() - usedBlocks));
-                }
-            }
-        }
-
-        for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
-            usedBlocks = 0;
-            tempAvailableBlocks = new ArrayList<>(box.getBlocks());
-
-            if (blueprint.getKey() % FIRST_STAGE_DIVIDER != 0) {
-
-                for (String requiredBlock : blueprint.getValue()) {
-
-                    if (tempAvailableBlocks.contains(requiredBlock)) {
-                        tempAvailableBlocks.remove(requiredBlock);
-                        usedBlocks++;
+                    if (isFirstInvoke) {
+                        box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
+                    } else {
+                        box.setSecondStageBlocks(box.getSecondStageBlocks() + usedBlocks);
                     }
-                }
-
-                if (usedBlocks == blueprint.getValue().size()) {
-                    box.setBlocks(tempAvailableBlocks);
-                    box.setSecondStageBlocks(box.getFirstStageBlocks() + usedBlocks);
-                    box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
                 } else {
                     box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
                     box.setMissedBlocks(box.getMissedBlocks() + (blueprint.getValue().size() - usedBlocks));
                 }
             }
         }
-
+        isFirstInvoke = false;
         box.setNotUsedBlocks(box.getBlocks().size());
     }
 
