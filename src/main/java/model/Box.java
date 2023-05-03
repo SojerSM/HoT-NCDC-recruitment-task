@@ -31,7 +31,7 @@ public class Box {
     }
 
     /**
-     * This method takes map created in readFileFromMethodArg() inside `Bricks` class
+     * This method takes map created in readFileFromMethodArg() inside `Bricks` class,
      * sorts it by blueprints indexes and gets rid of previously existing keys that
      * does not have any matching blueprint index.
      *

@@ -15,7 +15,7 @@ public class Validator {
      *             4 characters long.
      * @return true if all conditions are meet, false if input is wrong in any way.
      */
-    public static boolean validateInput(String[] parts) {
+    public static boolean validateInput(String [] parts) {
         if (parts[1].length() != CORRECT_CODE_LENGTH) return false;
 
         if (!checkIsUpperCase(parts[1])) return false;

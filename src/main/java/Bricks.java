@@ -6,10 +6,10 @@ import java.util.*;
 
 /**
  * NCDC House of Talents recruitment task.
- * If doesn't compile, try to restart your computer. That's weird, works on my PC though...
+ * Doesn't compile? Have you tried to restart your computer?
  *
  * @author Sebastian Mazur
- * @version 0.3.3
+ * @version 0.6.1
  * @since 2023-04-27
  */
 public class Bricks {
@@ -51,8 +51,10 @@ public class Bricks {
             String line = scanner.nextLine();
             line = line.replaceAll("\\r?\\n", "");
 
+            if (line.length() > 0 && !line.contains(":")) return null;
+
             String[] parts = line.split(":");
-            if (line.length() != 0 && parts[0].length() > 0) {
+            if (parts[0].length() > 0) {
 
                 // if given input doesn't meet requirements break the loop and return null
                 if (!Validator.validateInput(parts)) return null;
@@ -66,13 +68,17 @@ public class Bricks {
     }
 
     /**
-     * This method runs the first stage of program requirements.
+     * This method check all blueprints in required order; blueprints with id
+     * divisible by 3 with no reminder go first and after that the others are
+     * processed in default sequence.
      *
-     * @param initialized box object.
+     * @param initialized box object with ArrayList of non-assigned blocks and
+     *                    HashMap of blueprints.
      */
     private static void checkBlueprints(Box box) {
         List<String> tempAvailableBlocks;
         int usedBlocks;
+        int size;
 
         for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
             usedBlocks = 0;
@@ -83,31 +89,48 @@ public class Bricks {
 
                 for (String requiredBlock : blueprint.getValue()) {
 
+                    // temporarily remove block identical to required from the list
                     if (tempAvailableBlocks.contains(requiredBlock)) {
                         tempAvailableBlocks.remove(requiredBlock);
                         usedBlocks++;
                     }
                 }
-
-                if (usedBlocks == blueprint.getValue().size()) {
-                    box.setBlocks(tempAvailableBlocks);
-                    box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
-                    if (isFirstInvoke) {
-                        box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
-                    } else {
-                        box.setSecondStageBlocks(box.getSecondStageBlocks() + usedBlocks);
-                    }
-                } else {
-                    box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
-                    box.setMissedBlocks(box.getMissedBlocks() + (blueprint.getValue().size() - usedBlocks));
-                }
+                size = blueprint.getValue().size();
+                updateResults(usedBlocks,size,box,tempAvailableBlocks);
             }
         }
-        isFirstInvoke = false;
         box.setNotUsedBlocks(box.getBlocks().size());
+        isFirstInvoke = false;
     }
 
-    // manual testing purposes
+    /**
+     * This method updates specific Box fields regards to success or failure of
+     * blueprint checking.
+     *
+     * @param usedBlocks blocks required for given blueprint creation that were
+     *                   found in box.
+     * @param size amount of blocks required for given blueprint.
+     * @param box box object with HashMap of blueprints that is iterated in the
+     *            higher method.
+     * @param tempAvailableBlocks copy of Box List of non-assigned blocks reduced
+     *                            by currently used blocks.
+     */
+    private static void updateResults(int usedBlocks, int size, Box box, List<String> tempAvailableBlocks) {
+        if (usedBlocks == size) {
+            box.setBlocks(tempAvailableBlocks);
+            box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
+            if (isFirstInvoke) {
+                box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
+            } else {
+                box.setSecondStageBlocks(box.getSecondStageBlocks() + usedBlocks);
+            }
+        } else {
+            box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
+            box.setMissedBlocks(box.getMissedBlocks() + (size - usedBlocks));
+        }
+    }
+
+    // manual testing
     public static void generateBlocksList(int listSize) {
         generator.populateList(listSize);
         generator.writeToTheFile();
