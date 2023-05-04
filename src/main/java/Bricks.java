@@ -1,4 +1,3 @@
-import helpers.Characters;
 import helpers.Validator;
 import model.Box;
 
@@ -9,18 +8,18 @@ import java.util.*;
  * Doesn't compile? Have you tried to restart your computer?
  *
  * @author Sebastian Mazur
- * @version 0.6.1
+ * @version 0.7.1
  * @since 2023-04-27
  */
 public class Bricks {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final Box box = new Box();
 
     private static final String BAD_INPUT_MESSAGE = "klops";
     private static final int FIRST_STAGE_DIVIDER = 3;
     private static boolean isFirstInvoke = true;
 
     public static void main(String[] args) {
+        Box box = new Box();
 
         try {
             box.sortBlocksByBlueprint(readFileFromMethodArg());
@@ -28,6 +27,8 @@ public class Bricks {
             System.out.println(BAD_INPUT_MESSAGE);
             return;
         }
+
+        System.out.println(box);
 
         for (int i = 0; i < 2; i++) {
             checkBlueprints(box);
@@ -52,12 +53,6 @@ public class Bricks {
             line = line.replaceAll("\\r?\\n", "");
 
             if (line.length() > 0 && !line.contains(":")) return null;
-
-            // if given line contains "O" (means other group related block) count it as not used and skip iteration
-            if (line.contains(Characters.O.name())) {
-                box.setNotUsedBlocks(box.getNotUsedBlocks() + 1);
-                continue;
-            }
 
             String[] parts = line.split(":");
             if (parts[0].length() > 0) {
