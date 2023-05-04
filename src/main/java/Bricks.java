@@ -28,8 +28,6 @@ public class Bricks {
             return;
         }
 
-        System.out.println(box);
-
         for (int i = 0; i < 2; i++) {
             checkBlueprints(box);
         }
