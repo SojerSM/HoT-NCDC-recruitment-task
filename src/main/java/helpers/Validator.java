@@ -10,19 +10,16 @@ public class Validator {
     /**
      * This method checks conditions for given input.
      *
-     * @param parts stands for string array filled with blueprint index which should be a positive
-     *             natural number and block code which should be all uppercase and exactly
-     *             4 characters long.
+     * @param parts stands for array of string filled with blueprint index which should be a
+     *             positive natural number and block code which should be all uppercase and
+     *             exactly 4 characters long.
      * @return true if all conditions are meet, false if input is wrong in any way.
      */
     public static boolean validateInput(String [] parts) {
-        if (parts[1].length() != CORRECT_CODE_LENGTH) return false;
-
-        if (!checkIsUpperCase(parts[1])) return false;
-
-        if (!checkHasCorrectCharacters(parts[1])) return false;
-
-        if (Integer.parseInt(parts[0]) < 0) return false;
+        if (parts[1].length() != CORRECT_CODE_LENGTH ||
+                !checkIsUpperCase(parts[1]) ||
+                !checkHasCorrectCharacters(parts[1]) ||
+                Integer.parseInt(parts[0]) < 0) return false;
 
         try {
             Integer.parseInt(parts[0]);

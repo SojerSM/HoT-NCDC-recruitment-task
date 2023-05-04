@@ -1,4 +1,4 @@
-import helpers.Generator;
+import helpers.Characters;
 import helpers.Validator;
 import model.Box;
 
@@ -13,14 +13,14 @@ import java.util.*;
  * @since 2023-04-27
  */
 public class Bricks {
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final Box box = new Box();
+
     private static final String BAD_INPUT_MESSAGE = "klops";
     private static final int FIRST_STAGE_DIVIDER = 3;
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final Generator generator = new Generator();
     private static boolean isFirstInvoke = true;
 
     public static void main(String[] args) {
-        Box box = new Box();
 
         try {
             box.sortBlocksByBlueprint(readFileFromMethodArg());
@@ -53,10 +53,16 @@ public class Bricks {
 
             if (line.length() > 0 && !line.contains(":")) return null;
 
+            // if given line contains "O" (means other group related block) count it as not used and skip iteration
+            if (line.contains(Characters.O.name())) {
+                box.setNotUsedBlocks(box.getNotUsedBlocks() + 1);
+                continue;
+            }
+
             String[] parts = line.split(":");
             if (parts[0].length() > 0) {
 
-                // if given input doesn't meet requirements break the loop and return null
+                // if given input doesn't meet requirements, break the loop and return null
                 if (!Validator.validateInput(parts)) return null;
 
                 transformed.put(i,parts[0].concat(":" + parts[1]));
@@ -72,16 +78,13 @@ public class Bricks {
      * divisible by 3 with no reminder go first and after that the others are
      * processed in default sequence.
      *
-     * @param initialized box object with ArrayList of non-assigned blocks and
+     * @param box initialized box object with ArrayList of non-assigned blocks and
      *                    HashMap of blueprints.
      */
     private static void checkBlueprints(Box box) {
         List<String> tempAvailableBlocks;
-        int usedBlocks;
-        int size;
 
         for (Map.Entry<Integer, List<String>> blueprint : box.getBlueprints().entrySet()) {
-            usedBlocks = 0;
             tempAvailableBlocks = new ArrayList<>(box.getBlocks());
 
             if ((isFirstInvoke && blueprint.getKey() % FIRST_STAGE_DIVIDER == 0)
@@ -90,13 +93,9 @@ public class Bricks {
                 for (String requiredBlock : blueprint.getValue()) {
 
                     // temporarily remove block identical to required from the list
-                    if (tempAvailableBlocks.contains(requiredBlock)) {
-                        tempAvailableBlocks.remove(requiredBlock);
-                        usedBlocks++;
-                    }
+                    tempAvailableBlocks.remove(requiredBlock);
                 }
-                size = blueprint.getValue().size();
-                updateResults(usedBlocks,size,box,tempAvailableBlocks);
+                updateResults(blueprint.getValue().size(),box,tempAvailableBlocks);
             }
         }
         box.setNotUsedBlocks(box.getBlocks().size());
@@ -107,32 +106,25 @@ public class Bricks {
      * This method updates specific Box fields regards to success or failure of
      * blueprint checking.
      *
-     * @param usedBlocks blocks required for given blueprint creation that were
-     *                   found in box.
      * @param size amount of blocks required for given blueprint.
      * @param box box object with HashMap of blueprints that is iterated in the
      *            higher method.
      * @param tempAvailableBlocks copy of Box List of non-assigned blocks reduced
      *                            by currently used blocks.
      */
-    private static void updateResults(int usedBlocks, int size, Box box, List<String> tempAvailableBlocks) {
-        if (usedBlocks == size) {
+    private static void updateResults(int size, Box box, List<String> tempAvailableBlocks) {
+        if (box.getBlocks().size() - size == tempAvailableBlocks.size()) {
             box.setBlocks(tempAvailableBlocks);
             box.setFinishedBlueprints(box.getFinishedBlueprints() + 1);
+
             if (isFirstInvoke) {
-                box.setFirstStageBlocks(box.getFirstStageBlocks() + usedBlocks);
+                box.setFirstStageBlocks(box.getFirstStageBlocks() + size);
             } else {
-                box.setSecondStageBlocks(box.getSecondStageBlocks() + usedBlocks);
+                box.setSecondStageBlocks(box.getSecondStageBlocks() + size);
             }
         } else {
             box.setNotFinishedBlueprints(box.getNotFinishedBlueprints() + 1);
-            box.setMissedBlocks(box.getMissedBlocks() + (size - usedBlocks));
+            box.setMissedBlocks(box.getMissedBlocks() + (size - (box.getBlocks().size() - tempAvailableBlocks.size())));
         }
-    }
-
-    // manual testing
-    public static void generateBlocksList(int listSize) {
-        generator.populateList(listSize);
-        generator.writeToTheFile();
     }
 }

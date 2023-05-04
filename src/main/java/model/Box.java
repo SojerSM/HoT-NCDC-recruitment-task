@@ -64,18 +64,6 @@ public class Box {
         this.blueprints = orderedBlocks;
     }
 
-    // manual testing purposes
-    public void printBoxContent() {
-        System.out.println(this.blocks);
-        try {
-            for (Map.Entry<Integer, List<String>> entry : this.blueprints.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
-            }
-        } catch(NullPointerException error) {
-            System.out.println(error);
-        }
-    }
-
     public void printResults() {
         System.out.println(getFirstStageBlocks());
         System.out.println(getSecondStageBlocks());

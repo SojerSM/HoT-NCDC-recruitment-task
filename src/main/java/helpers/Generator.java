@@ -85,4 +85,14 @@ public class Generator {
             System.err.format("IOException: %s%n", error);
         }
     }
+
+    /**
+     * Manual testing.
+     *
+     * @param listSize expected size of generated .txt file.
+     */
+    public void generateBlocksList(int listSize) {
+        populateList(listSize);
+        writeToTheFile();
+    }
 }
