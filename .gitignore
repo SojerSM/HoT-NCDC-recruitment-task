@@ -1,11 +1,5 @@
-# Ignore all .idea files...
+# Ignore all .idea files.
 /.idea
-
-# except
-
-!vcs.xml
-!encodings.xml
-!misc.xml
 
 # Ignore all target files.
 
