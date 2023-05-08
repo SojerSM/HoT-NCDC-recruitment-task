@@ -1,6 +1,16 @@
-# Default ignored files
+# Ignore all .idea files...
 /.idea
+
+# except
+
+!vcs.xml
+!encodings.xml
+!misc.xml
+
+# Ignore all target files.
+
 /target
-pom.xml
+
+# Ignore all .class files.
 
 *.class
